@@ -1,0 +1,50 @@
+language: cpp
+env:
+  matrix:
+    - HOST=i686-w64-mingw32
+    - HOST=x86_64-w64-mingw32
+compiler:
+  - gcc
+before_install:
+  - export URL_BASE=github.com/uchida/pandora_agent_win32_depends/releases/download
+  - export RELEASE=20141111
+  - sudo apt-get update -qq
+  - |
+    if [[ "${HOST}" = "i586-mingw32msvc" ]]; then
+      sudo apt-get install -qq mingw32
+    fi
+  - |
+    if [[ "${HOST}" = "i686-w64-mingw32" ]]; then
+      sudo apt-get install -qq gcc-mingw-w64-i686 g++-mingw-w64-i686 binutils-mingw-w64-i686 mingw-w64-dev
+    fi
+  - |
+    if [[ "${HOST}" = "x86_64-w64-mingw32" ]]; then
+      sudo apt-get install -qq gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64 mingw-w64-dev
+    fi
+  - unset CC
+  - unset CXX
+  - curl -L https://${URL_BASE}/${RELEASE}/zlib-v1.2.8-${HOST}.tar.gz | sudo tar zxf - -C /usr/${HOST}
+  - curl -L https://${URL_BASE}/${RELEASE}/boost-1.57.0-${HOST}.tar.gz | sudo tar zxf - -C /usr/${HOST}
+  - curl -L https://${URL_BASE}/${RELEASE}/OpenSSL_1_0_1j-${HOST}.tar.gz | sudo tar zxf - -C /usr/${HOST}
+  - curl -L https://${URL_BASE}/${RELEASE}/curl-7_39_0-${HOST}.tar.gz | sudo tar zxf - -C /usr/${HOST}
+  - aclocal
+  - autoconf
+  - autoheader
+  - touch NEWS
+  - touch ChangeLog
+  - automake --add-missing
+script:
+  - "./configure --host=${HOST}"
+  - make
+  - cp PandoraAgent.exe PandoraAgent-${HOST}.exe
+deploy:
+  edge: true
+  provider: releases
+  api_key:
+    secure: jal5v5GCPNg1pDVOSLSAYAEh5taF5hteTklKPxx6K/PcYeCvpKO7m6Ul4+oyUlcMnec84JFzz51gRe4Fohd+6Nu+Jx3a21XqEHzuOH9jegmHfb8DKkcU/2AAORFfzJQaPGQQzIbOAdQzEG8lVECg5hEIPnMzyj4E1kpPXg0kHPc=
+  file:
+    - PandoraAgent-${HOST}.exe
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
