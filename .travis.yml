@@ -1,0 +1,36 @@
+language: cpp
+env:
+  global:
+    - HOST=i586-mingw32msvc
+compiler:
+  - gcc
+before_install:
+  - export URL_BASE=github.com/uchida/pandora_agent_win32_depends/releases/download
+  - export RELEASE=20141110
+  - sudo apt-get update -qq
+  - |
+    if [[ "${HOST}" = "i586-mingw32msvc" ]]; then
+      sudo apt-get install -qq mingw32
+    fi
+  - |
+    if [[ "${HOST}" = "i686-w64-mingw32" ]]; then
+      sudo apt-get install -qq gcc-mingw-w64-i686 g++-mingw-w64-i686 binutils-mingw-w64-i686 mingw-w64-dev
+    fi
+  - |
+    if [[ "${HOST}" = "x86_64-w64-mingw32" ]]; then
+      sudo apt-get install -qq gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64 mingw-w64-dev
+    fi
+  - unset CC
+  - unset CXX
+  - curl -L https://${URL_BASE}/${RELEASE}/boost-1.57.0-${HOST}.tar.gz | sudo tar zxf - -C /
+  - curl -L https://${URL_BASE}/${RELEASE}/OpenSSL_1_0_1j-${HOST}.tar.gz | sudo tar zxf - -C /
+  - curl -L https://${URL_BASE}/${RELEASE}/curl-7_39_0-${HOST}.tar.gz | sudo tar zxf - -C /
+  - aclocal
+  - autoconf
+  - autoheader
+  - touch NEWS
+  - touch ChangeLog
+  - automake --add-missing
+script:
+  - "./configure --host=${HOST}"
+  - make
