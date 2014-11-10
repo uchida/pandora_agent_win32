@@ -22,9 +22,9 @@ before_install:
     fi
   - unset CC
   - unset CXX
-  - curl -L https://${URL_BASE}/${RELEASE}/boost-1.57.0-${HOST}.tar.gz | sudo tar zxf - -C /
-  - curl -L https://${URL_BASE}/${RELEASE}/OpenSSL_1_0_1j-${HOST}.tar.gz | sudo tar zxf - -C /
-  - curl -L https://${URL_BASE}/${RELEASE}/curl-7_39_0-${HOST}.tar.gz | sudo tar zxf - -C /
+  - curl -L https://${URL_BASE}/${RELEASE}/boost-1.57.0-${HOST}.tar.gz | sudo tar zxf - -C /usr/${HOST}
+  - curl -L https://${URL_BASE}/${RELEASE}/OpenSSL_1_0_1j-${HOST}.tar.gz | sudo tar zxf - -C /usr/${HOST}
+  - curl -L https://${URL_BASE}/${RELEASE}/curl-7_39_0-${HOST}.tar.gz | sudo tar zxf - -C /usr/${HOST}
   - aclocal
   - autoconf
   - autoheader
