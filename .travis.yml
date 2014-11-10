@@ -1,7 +1,7 @@
 language: cpp
 env:
   global:
-    - i686-w64-mingw32
+    - HOST=i686-w64-mingw32
 compiler:
   - gcc
 before_install:
